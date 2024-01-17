@@ -16,7 +16,7 @@ The whole process is seamless and users don't need to worry about the gas fee an
 
 - Secondly, you should prepare some ETH in Sepolia testnet. You could visit [faucet](https://sepoliafaucet.com/) to register a Alchemy account and send some ETH to your test wallet.
 
-  ![Alt text](image-1.png)
+  ![Sepolia Testnet](./docs/images/sepolia-testnet.png))
 
 - And you need a local ethereum node to run the local-testing. You can use ganache-cli, hardhat or Anvil. Here are the Anvil commands
 to fork with sepolia testnet. replace with your API-Key and the local node will listen on port `8545`.

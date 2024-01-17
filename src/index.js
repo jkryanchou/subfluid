@@ -18,7 +18,7 @@ const doc = `
         -s, --service-wallet SERVICE   Service wallet address to receive the subscription and GHO Token.
         -e, --plan PLAN                Subscription Fee to pay for service
         -r, --rpc-url RPC-URL          Specify RPC URL to connect to Network or Chains
-        -p, --private-key PRIVATE-KEY  Specify private key to connect to Network or Chains
+      -p, --private-key PRIVATE-KEY  Specify private key to connect to Network or Chains
 `;
 
 const main = async () => {
