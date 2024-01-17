@@ -1,0 +1,14 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@alchemy/aa-accounts": "^2.1.0",
+    "@alchemy/aa-alchemy": "^2.1.0",
+    "@alchemy/aa-core": "^2.0.0",
+    "chai": "^5.0.0",
+    "docopt": "^0.6.2",
+    "ethers": "^6.9.2",
+    "mocha": "^10.2.0",
+    "ndb": "^0.2.4",
+    "viem": "^2.1.1"
+  }
+}
