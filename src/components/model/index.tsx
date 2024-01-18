@@ -3,11 +3,13 @@
 import React, {Ref, useEffect, useImperativeHandle, useState} from "react";
 import styles from './index.module.scss';
 import Image from "next/image";
+import classNames from "classnames";
 
 export declare interface ModelProps {
-  onClose: () => void
+  onClose?: () => void
   children: React.ReactNode,
-  closable?: boolean
+  closable?: boolean,
+  contentClassName?: string
 }
 
 export declare interface ModelType {
@@ -15,7 +17,7 @@ export declare interface ModelType {
   show: () => void
 }
 
-function Modal({onClose , closable, children}: ModelProps, ref: Ref<ModelType>) {
+function Modal({onClose , closable = true, contentClassName, children}: ModelProps, ref: Ref<ModelType>) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -50,7 +52,7 @@ function Modal({onClose , closable, children}: ModelProps, ref: Ref<ModelType>) 
   return (
       <div className={styles.modal}>
         <div className={styles.overlay} />
-        <div className={styles.content}>
+        <div className={classNames(styles.content, contentClassName)}>
           {
             closable? (
                 <button className="p-[20px] absolute top-0 right-0" onClick={onClose}>
