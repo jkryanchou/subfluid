@@ -15,7 +15,7 @@ describe('Subscriber Test Suites', function () {
         // runs once before the first test in this block
         userAddr = '0xYourWalletAddress';
         serviceAddr = '0xYourServiceWalletAddress';
-        testSubscriber = new Subscriber(plan, userAddr, serviceAddr, '<Private-KEY>', 'http://localhost:8545');
+        testSubscriber = new Subscriber('<Private-KEY>', 'http://localhost:8545');
     });
 
     it('Should approve USDC to wallet address', async function () {

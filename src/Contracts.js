@@ -2,7 +2,7 @@
 const USDC = {
   address: "0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8",
   abi: [
-    "function approve(address, uint256) external returns (bool)",
+    "function approve(address spender, uint256 amount) external returns (bool)",
   ],
   decimals: BigInt(1e6),
 };

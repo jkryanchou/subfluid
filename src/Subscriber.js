@@ -4,7 +4,7 @@ import { USDC, AAVE, GHO } from "./Contracts.js";
 
 export class Subscriber {
 
-  constructor(plan, userAddr, serviceAddr, privateKey, rpcUrl) {
+  constructor(privateKey, rpcUrl) {
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
     this.opWallet = new ethers.Wallet(privateKey, this.provider);
 
