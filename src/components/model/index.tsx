@@ -6,14 +6,16 @@ import Image from "next/image";
 
 export declare interface ModelProps {
   onClose: () => void
-  children: React.ReactNode
+  children: React.ReactNode,
+  closable?: boolean
 }
+
 export declare interface ModelType {
   close: () => void
   show: () => void
 }
 
-function Modal({onClose , children}: ModelProps, ref: Ref<ModelType>) {
+function Modal({onClose , closable, children}: ModelProps, ref: Ref<ModelType>) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -49,9 +51,14 @@ function Modal({onClose , children}: ModelProps, ref: Ref<ModelType>) {
       <div className={styles.modal}>
         <div className={styles.overlay} />
         <div className={styles.content}>
-          <button className="p-[20px] absolute top-0 right-0" onClick={onClose}>
-            <Image src={"/icon/model-close.svg"} alt="Close" width={28} height={28} />
-          </button>
+          {
+            closable? (
+                <button className="p-[20px] absolute top-0 right-0" onClick={onClose}>
+                  <Image src={"/icon/model-close.svg"} alt="Close" width={28} height={28} />
+                </button>
+            ) : null
+          }
+
 
           {children}
         </div>
