@@ -25,6 +25,22 @@ to fork with sepolia testnet. replace with your API-Key and the local node will 
   anvil --fork-url=https://eth-sepolia.g.alchemy.com/v2/<API-KEY>
   ```
 
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
 # Usages
 ---
 
@@ -77,5 +93,3 @@ You should replace some hardcode wallet address (`userAddr & serviceAddr`) with 
     });
 ...
 ```
-
-**TODO** Read from the env file to replace the hardcode wallet address.
