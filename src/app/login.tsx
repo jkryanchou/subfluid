@@ -3,6 +3,7 @@
 import React, {createContext, useRef, useState} from "react";
 import LoginModal, {LoginModalType} from "@/components/login";
 import {useWalletContext} from "@/context/wallet";
+import SubscribeModal, {SubscribeModalType} from "@/components/subscribe";
 
 
 interface LoginContextProps {
@@ -23,16 +24,17 @@ interface LoginContextProviderProps {
 export default function LoginContextProvider({children}: LoginContextProviderProps) {
 
   const loginModalRef = useRef<LoginModalType>(null);
+  const subscribeModalRef = useRef<SubscribeModalType>(null);
   const {login, isLoggedIn} = useWalletContext();
 
   const [account, setAccount] = useState(null);
 
   const context = {
     login: () => {
-      if(!isLoggedIn) {
+      if (!isLoggedIn) {
         loginModalRef?.current?.login();
       } else {
-        console.log('Payment');
+        subscribeModalRef?.current?.open();
       }
     }
   }
@@ -45,6 +47,7 @@ export default function LoginContextProvider({children}: LoginContextProviderPro
       <LoginContext.Provider value={context}>
         {children}
         <LoginModal ref={loginModalRef} onSubmit={handleLogin}/>
+        <SubscribeModal ref={subscribeModalRef}/>
       </LoginContext.Provider>
   )
 }

@@ -1,10 +1,14 @@
 'use client';
 
 import Modal, {ModelType} from "@/components/model";
-import React, {useEffect, useRef, useState} from "react";
+import React, {Ref, useCallback, useEffect, useImperativeHandle, useRef, useState} from "react";
 import Image from "next/image";
 import styles from './index.module.scss';
 import Link from "next/link";
+import {useWalletContext} from "@/context/wallet";
+import {AlchemyTokenAbi, tokenContractAddress} from "@/config/token-contract";
+import {encodeFunctionData, Hash} from "viem";
+import {mod} from "@noble/curves/abstract/modular";
 
 
 interface SubscribeModalProps {
@@ -31,8 +35,8 @@ function Plan({plan, active}: {plan: PlanItem, active?: boolean}) {
 
           <div className="text-[12px] text-[#909090] mt-[6px]">
             {
-              plan.features.map(item => (
-                  <div className="mt-[12px] leading-[14px] flex flex-row items-start" key={item}>
+              plan.features.map((item, index) => (
+                  <div className="mt-[12px] leading-[14px] flex flex-row items-start" key={`${item}-${index}`}>
                     <Image className="mr-[5px]" src={"icon/check.svg"} alt={"feature"} width={15} height={15} />
                     <span>{item}</span>
                   </div>
@@ -44,10 +48,12 @@ function Plan({plan, active}: {plan: PlanItem, active?: boolean}) {
   )
 }
 
-function SubscribeModal() {
+function SubscribeModal(props: any, ref: Ref<SubscribeModalType>) {
   const modalRef = useRef<ModelType>(null);
   const [subscribed, setSubscribed] = useState<boolean>(false);
   const [currentPlanName, setCurrentPlanName] = useState<string>('None');
+  const { provider } = useWalletContext();
+
   const plans: PlanItem[] = [
     {
       name: 'Monthly',
@@ -87,13 +93,45 @@ function SubscribeModal() {
   const currentPlan = plans.find(item => item.name === currentPlanName);
 
 
+  useImperativeHandle(ref, () => {
+    return {
+      open: () => {
+        modalRef?.current?.show();
+      },
+      close: () => {
+        modalRef?.current?.close()
+      }
+    }
+  })
+
   const handleClose = () => {
     modalRef?.current?.close();
   }
 
-  const handleSubscribe = () => {
+  const handleSubscribe = useCallback(async () => {
+    if (!provider) {
+      throw new Error("Provider not initialized");
+    }
+    const uoHash = await provider.sendUserOperation({
+      target: tokenContractAddress,
+      data: encodeFunctionData({
+        abi: AlchemyTokenAbi,
+        functionName: "mint",
+        args: [await provider.getAddress()],
+      }),
+    });
+
+    console.log('transaction hash: ', uoHash.hash)
+    let txHash: Hash;
+    try {
+      txHash = await provider.waitForUserOperationTransaction(uoHash.hash);
+      console.log('txHash', txHash);
+    } catch (e) {
+      return;
+    }
+
     setSubscribed(true);
-  }
+  }, [provider]);
 
   if(subscribed) {
     return (

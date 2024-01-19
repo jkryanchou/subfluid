@@ -5,6 +5,7 @@ import classNames from "classnames";
 import React, {useImperativeHandle, useRef, useState} from "react";
 import Image from "next/image";
 import {connectSolProvider} from "@lit-protocol/auth-browser/src/lib/chains/sol";
+import ModalLoading from "@/components/model/loading";
 
 function OperationButton(
     {
@@ -52,19 +53,7 @@ function LoginModal({onSubmit}: LoginModalProps, ref: React.Ref<LoginModalType>)
   }, [modalRef])
 
 
-  const renderLoading = () => {
-    return (
-        <div className={"flex flex-col items-center justify-center"}>
-          <Image className="animate-spin-fast	mt-[40px]" src="/logo-icon.svg" alt="logo" width={58}
-                 height={58}/>
-
-          <div className="flex flex-row items-center mb-[20px] mt-[77px]">
-            <Image src="/icon/powered.svg" alt="powered" width={22} height={22}/>
-            <span className="text-[#C3C3C3] text-[18px] ml-[8px]">Powered by Aave</span>
-          </div>
-        </div>
-    )
-  }
+  const renderLoading = () => <ModalLoading/>
 
   const renderContent = () => {
     return (
@@ -72,12 +61,18 @@ function LoginModal({onSubmit}: LoginModalProps, ref: React.Ref<LoginModalType>)
           <h2 className="text-[28px] leading-[32px] font-bold	">What is your email ?</h2>
 
           <form onSubmit={async (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            const data = new FormData(event.currentTarget);
-            const email = data.get("email")
-            if (email) {
-              await onSubmit(email.toString());
+            try {
+              event.preventDefault();
+              event.stopPropagation();
+              const data = new FormData(event.currentTarget);
+              const email = data.get("email")
+              if (email) {
+                setLoading(true);
+                await onSubmit(email.toString());
+                setLoading(false);
+              }
+            } catch (ex) {
+              setLoading(false);
             }
           }}>
             <input

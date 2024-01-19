@@ -17,16 +17,21 @@ export declare interface ModelType {
   show: () => void
 }
 
-function Modal({onClose , closable = true, contentClassName, children}: ModelProps, ref: Ref<ModelType>) {
+function Modal({
+                 onClose,
+                 closable = true,
+                 contentClassName,
+                 children
+               }: ModelProps, ref: Ref<ModelType>) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const container = document.querySelector("body");
-    if(!container) {
+    if (!container) {
       return;
     }
 
-    if(visible) {
+    if (visible) {
       container.style.overflowY = 'hidden';
     } else {
       container.style.overflowY = 'auto';
@@ -45,18 +50,24 @@ function Modal({onClose , closable = true, contentClassName, children}: ModelPro
     }
   })
 
-  if(!visible) {
+  if (!visible) {
     return null;
   }
 
   return (
       <div className={styles.modal}>
-        <div className={styles.overlay} />
+        <div className={styles.overlay}/>
         <div className={classNames(styles.content, contentClassName)}>
           {
-            closable? (
-                <button className="p-[20px] absolute top-0 right-0" onClick={onClose}>
-                  <Image src={"/icon/model-close.svg"} alt="Close" width={28} height={28} />
+            closable ? (
+                <button className="p-[20px] absolute top-0 right-0" onClick={() => {
+                  if (onClose) {
+                    onClose()
+                  } else {
+                    setVisible(false);
+                  }
+                }}>
+                  <Image src={"/icon/model-close.svg"} alt="Close" width={28} height={28}/>
                 </button>
             ) : null
           }

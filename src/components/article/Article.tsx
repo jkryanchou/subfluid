@@ -1,4 +1,4 @@
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import {MDXRemote} from 'next-mdx-remote/rsc';
 import classNames from "classnames";
 import Image from "next/image";
 import styles from './article.module.scss'
@@ -6,7 +6,8 @@ import Link from "next/link";
 
 
 export default function Article() {
-  const  article = {
+
+  const article = {
     title: "What is Subfluid?",
     author: {
       avatar: "/article/avatar.png",
@@ -31,10 +32,11 @@ Per suprall i mingar makron. Poligen fyk i epitäska. Ponere suprabel. Sygang po
 
   return (
       <div className={classNames("max-w-[780px] mx-auto pt-[32px]")}>
-        <h2 className={styles.title} >{article.title}</h2>
+        <h2 className={styles.title}>{article.title}</h2>
 
         <div className={classNames("flex flex-row", styles['card'])}>
-          <Image className="rounded-[50%]" src={article.author.avatar} alt={"User Avatar"} width={44} height={44} />
+          <Image className="rounded-[50%]" src={article.author.avatar} alt={"User Avatar"}
+                 width={44} height={44}/>
           <div className="ml-[21px] flex flex-col justify-evenly">
             <p className={styles.username}>{article.author.username}</p>
             <p className={styles['created-time']}>{article.author.created_at}</p>
@@ -44,28 +46,31 @@ Per suprall i mingar makron. Poligen fyk i epitäska. Ponere suprabel. Sygang po
         <div className={classNames("flex flex-row", styles['card'])}>
 
           <button className="flex flex-row">
-            <Image src={"/icon/like.svg"} alt={"Like"} width={24} height={24} />
+            <Image src={"/icon/like.svg"} alt={"Like"} width={24} height={24}/>
             <span className="ml-[8px]">14</span>
           </button>
           <button className="flex flex-row ml-[40px]">
-            <Image src={"/icon/comment.svg"} alt={"Comment"} width={24} height={24} />
+            <Image src={"/icon/comment.svg"} alt={"Comment"} width={24} height={24}/>
             <span className="ml-[8px]">7</span>
           </button>
         </div>
 
         <div className={styles.markdown}>
-          <MDXRemote source={article.content} />
+          <MDXRemote source={article.content}/>
         </div>
 
         <div>
-          <button className="w-full h-[44px] bg-[#262626] text-[#FFFFFF] rounded-[6px] mt-[32px] mb-[90px]">
+          <button
+              className="w-full h-[44px] bg-[#262626] text-[#FFFFFF] rounded-[6px] mt-[32px] mb-[90px]"
+          >
             Subscribe to continue reading
           </button>
         </div>
 
-        <div className={classNames("flex flex-row justify-between py-[16px] border-t-[1px] border-t-[#D6D6D6]", styles.footer)}>
+        <div
+            className={classNames("flex flex-row justify-between py-[16px] border-t-[1px] border-t-[#D6D6D6]", styles.footer)}>
           <Link href="/">
-            <Image src={"/article-logo.svg"} alt={"Article Logo"} width={92} height={25} />
+            <Image src={"/article-logo.svg"} alt={"Article Logo"} width={92} height={25}/>
           </Link>
 
           <span className="text-[14px] opacity-30">Powered by Aave</span>
