@@ -1,12 +1,16 @@
-import {MDXRemote} from 'next-mdx-remote/rsc';
+'use client';
+
 import classNames from "classnames";
 import Image from "next/image";
 import styles from './article.module.scss'
 import Link from "next/link";
+import {useContext} from "react";
+import {LoginContext} from "@/app/login";
+import Markdown from "react-markdown";
 
 
 export default function Article() {
-
+  const loginContext = useContext(LoginContext);
   const article = {
     title: "What is Subfluid?",
     author: {
@@ -56,12 +60,15 @@ Per suprall i mingar makron. Poligen fyk i epitäska. Ponere suprabel. Sygang po
         </div>
 
         <div className={styles.markdown}>
-          <MDXRemote source={article.content}/>
+          <Markdown>{article.content}</Markdown>
         </div>
 
         <div>
           <button
               className="w-full h-[44px] bg-[#262626] text-[#FFFFFF] rounded-[6px] mt-[32px] mb-[90px]"
+              onClick={() => {
+                loginContext.login();
+              }}
           >
             Subscribe to continue reading
           </button>

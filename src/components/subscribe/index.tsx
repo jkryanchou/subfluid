@@ -12,6 +12,7 @@ import {mod} from "@noble/curves/abstract/modular";
 import {SubscriberViem} from "@/services/SubscriberViem";
 import {BatchUserOperationCallData} from "@alchemy/aa-core";
 import {clientEnv} from "@/env/client.mjs";
+import ModalLoading from "@/components/model/loading";
 
 
 interface SubscribeModalProps {
@@ -66,6 +67,7 @@ function SubscribeModal(props: any, ref: Ref<SubscribeModalType>) {
   const [subscribed, setSubscribed] = useState<boolean>(false);
   const [currentPlanName, setCurrentPlanName] = useState<string>('None');
   const {provider, scaAddress} = useWalletContext();
+  const [loading, setLoading] = useState(false);
 
   const plans: PlanItem[] = [
     {
@@ -122,22 +124,37 @@ function SubscribeModal(props: any, ref: Ref<SubscribeModalType>) {
       throw new Error("Provider not initialized");
     }
 
+    if(currentPlanName.toLowerCase() === 'none') {
+      alert("No need to upgrade.");
+      return;
+    }
+
 
     const testSubscriber = new SubscriberViem(provider.rpcClient);
     const serviceAddr = clientEnv.NEXT_PUBLIC_VAULT_ADDRESS
     const address = await provider.getAddress()
     const batchUserOperations = await testSubscriber.genUserOperations(currentPlanName, address, serviceAddr);
+    setLoading(true);
     const uoHash = await provider.sendUserOperation(batchUserOperations as BatchUserOperationCallData);
-    let txHash: Hash;
     try {
-      txHash = await provider.waitForUserOperationTransaction(uoHash.hash);
+      const txHash = await provider.waitForUserOperationTransaction(uoHash.hash);
+      console.log('Submit Transaction:', txHash);
     } catch (e) {
       console.log(e)
       return;
     }
 
+    setLoading(false);
     setSubscribed(true);
   }, [provider, currentPlanName]);
+
+  if (loading) {
+    return (
+        <Modal ref={modalRef} closable={false}>
+          <ModalLoading />
+        </Modal>
+    )
+  }
 
   if (subscribed) {
     return (

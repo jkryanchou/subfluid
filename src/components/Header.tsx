@@ -33,7 +33,7 @@ export default function Header() {
           </button>
 
           {
-            isLoggedIn ? (
+            isLoggedIn && scaAddress ? (
                 <button
                     className="ml-[16px] px-[16px] w-[200px] h-[44px] rounded-[100px] bg-[#1A1A1A] text-[#FFF] flex flex-row items-center justify-center"
                     onClick={() => {
