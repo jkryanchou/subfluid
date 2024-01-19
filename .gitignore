@@ -21,6 +21,7 @@
 .env
 
 *.pem
+.idea/
 
 # debug
 npm-debug.log*
