@@ -9,6 +9,9 @@ import {useWalletContext} from "@/context/wallet";
 import {AlchemyTokenAbi, tokenContractAddress} from "@/config/token-contract";
 import {encodeFunctionData, Hash} from "viem";
 import {mod} from "@noble/curves/abstract/modular";
+import {SubscriberViem} from "@/services/SubscriberViem";
+import {BatchUserOperationCallData} from "@alchemy/aa-core";
+import {clientEnv} from "@/env/client.mjs";
 
 
 interface SubscribeModalProps {
@@ -25,19 +28,29 @@ interface PlanItem {
   features: string[]
 }
 
-function Plan({plan, active}: {plan: PlanItem, active?: boolean}) {
+function Plan({plan, active, onSelect}: { plan: PlanItem, active?: boolean, onSelect?: () => void }) {
   return (
       <label className={styles['plan-item']}>
-        <input type="radio" name="plan" value={plan.name} defaultChecked={active} />
-        <div className="plan-selector w-[218px] h-[291px] mx-[12px] flex flex-col rounded-[12px] p-[20px] border-[2px] border-[#D6D6D6]">
+        <input
+            type="radio" name="plan" value={plan.name} defaultChecked={active}
+            onChange={e => {
+              if (e.target.value === plan.name && onSelect) {
+                onSelect();
+              }
+            }}
+        />
+        <div
+            className="plan-selector w-[218px] h-[291px] mx-[12px] flex flex-col rounded-[12px] p-[20px] border-[2px] border-[#D6D6D6]">
           <h3 className="text-[18px] font-bold leading-[22px] text-[#333333]">{plan.name}</h3>
           <p className="text-[14px] text-[#8D50DB] leading-[16px] font-semibold mt-[6px]">{plan.price}</p>
 
           <div className="text-[12px] text-[#909090] mt-[6px]">
             {
               plan.features.map((item, index) => (
-                  <div className="mt-[12px] leading-[14px] flex flex-row items-start" key={`${item}-${index}`}>
-                    <Image className="mr-[5px]" src={"icon/check.svg"} alt={"feature"} width={15} height={15} />
+                  <div className="mt-[12px] leading-[14px] flex flex-row items-start"
+                       key={`${item}-${index}`}>
+                    <Image className="mr-[5px]" src={"icon/check.svg"} alt={"feature"} width={15}
+                           height={15}/>
                     <span>{item}</span>
                   </div>
               ))
@@ -52,43 +65,39 @@ function SubscribeModal(props: any, ref: Ref<SubscribeModalType>) {
   const modalRef = useRef<ModelType>(null);
   const [subscribed, setSubscribed] = useState<boolean>(false);
   const [currentPlanName, setCurrentPlanName] = useState<string>('None');
-  const { provider } = useWalletContext();
+  const {provider, scaAddress} = useWalletContext();
 
   const plans: PlanItem[] = [
     {
       name: 'Monthly',
       price: '33 GHO/month',
       features: [
-          'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
-          'Lörem ipsum saska prostat.',
-          'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. '
+        'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
+        'Lörem ipsum saska prostat.',
+        'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. '
       ]
     },
     {
       name: 'Annual',
       price: '66 GHO/month',
       features: [
-          'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
-          'Lörem ipsum saska prostat.',
-          'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
-          'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. '
+        'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
+        'Lörem ipsum saska prostat.',
+        'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
+        'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. '
       ]
     },
     {
       name: 'None',
       price: 'Free',
       features: [
-          'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
-          'Lörem ipsum saska prostat.',
-          'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
-          'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. '
+        'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
+        'Lörem ipsum saska prostat.',
+        'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. ',
+        'Lörem ipsum saska prostat. Suprasm adöbel nuheten fabel tratres. '
       ]
     }
   ]
-
-  useEffect(() => {
-    modalRef?.current?.show();
-  }, [modalRef])
 
   const currentPlan = plans.find(item => item.name === currentPlanName);
 
@@ -112,32 +121,30 @@ function SubscribeModal(props: any, ref: Ref<SubscribeModalType>) {
     if (!provider) {
       throw new Error("Provider not initialized");
     }
-    const uoHash = await provider.sendUserOperation({
-      target: tokenContractAddress,
-      data: encodeFunctionData({
-        abi: AlchemyTokenAbi,
-        functionName: "mint",
-        args: [await provider.getAddress()],
-      }),
-    });
 
-    console.log('transaction hash: ', uoHash.hash)
+
+    const testSubscriber = new SubscriberViem(provider.rpcClient);
+    const serviceAddr = clientEnv.NEXT_PUBLIC_VAULT_ADDRESS
+    const address = await provider.getAddress()
+    const batchUserOperations = await testSubscriber.genUserOperations(currentPlanName, address, serviceAddr);
+    const uoHash = await provider.sendUserOperation(batchUserOperations as BatchUserOperationCallData);
     let txHash: Hash;
     try {
       txHash = await provider.waitForUserOperationTransaction(uoHash.hash);
-      console.log('txHash', txHash);
     } catch (e) {
+      console.log(e)
       return;
     }
 
     setSubscribed(true);
-  }, [provider]);
+  }, [provider, currentPlanName]);
 
-  if(subscribed) {
+  if (subscribed) {
     return (
         <Modal ref={modalRef} closable={false}>
           <div className="flex flex-col items-center">
-            <div className="flex flex-row justify-between w-full pb-[20px] border-b-[1px] border-[#D6D6D6]">
+            <div
+                className="flex flex-row justify-between w-full pb-[20px] border-b-[1px] border-[#D6D6D6]">
               <div className="w-full flex flex-row items-center">
                 <Image src={"/article/avatar.png"} alt={'avatar'} width={32} height={32}/>
                 <p className="ml-[12px]">ribmaster</p>
@@ -145,15 +152,18 @@ function SubscribeModal(props: any, ref: Ref<SubscribeModalType>) {
 
               <div className="flex flex-row items-center">
                 <span className="text-[20px] text-[#333333] font-bold">{currentPlan?.name}</span>
-                <span className="ml-[16px] text-[#8D50DB] font-semibold text-[14px]">{currentPlan?.price}</span>
+                <span
+                    className="ml-[16px] text-[#8D50DB] font-semibold text-[14px] whitespace-nowrap">{currentPlan?.price}</span>
               </div>
             </div>
 
             <div className="mt-[80px] flex flex-col items-center">
-              <Image src={"icon/success.svg"} alt={"success"} width={64} height={64} />
+              <Image src={"icon/success.svg"} alt={"success"} width={64} height={64}/>
               <p className="font-bold text-[28px] leading-[34px] mt-[16px]">Subscribed</p>
 
-              <button className={"w-[300px] h-[44px] rounded-[12px] bg-[#333333] text-[#FFFFFF] text-[14px] leading-[16px] mt-[56px]"} onClick={handleClose}>
+              <button
+                  className={"w-[300px] h-[44px] rounded-[12px] bg-[#333333] text-[#FFFFFF] text-[14px] leading-[16px] mt-[56px]"}
+                  onClick={handleClose}>
                 Continue reading
               </button>
 
@@ -177,10 +187,21 @@ function SubscribeModal(props: any, ref: Ref<SubscribeModalType>) {
           </div>
 
           <div className="flex flex-row justify-center mt-[36px]">
-            {plans.map(item => <Plan key={item.name} plan={item} active={item.name === currentPlanName} />)}
+            {plans.map(item =>
+                <Plan
+                    key={item.name}
+                    plan={item}
+                    active={item.name === currentPlanName}
+                    onSelect={() => {
+                      setCurrentPlanName(item.name);
+                    }}
+                />)
+            }
           </div>
 
-          <button className={"w-[300px] h-[44px] rounded-[12px] bg-[#333333] text-[#FFFFFF] text-[14px] leading-[16px] mt-[36px]"} onClick={handleSubscribe}>
+          <button
+              className={"w-[300px] h-[44px] rounded-[12px] bg-[#333333] text-[#FFFFFF] text-[14px] leading-[16px] mt-[36px]"}
+              onClick={handleSubscribe}>
             Subscribe
           </button>
 

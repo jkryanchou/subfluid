@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { SubscriberViem } from '../src/SubscriberViem.js';
-import { USDC, AAVE, GHO } from '../src/Contracts.js';
+import { SubscriberViem } from '../src/services/SubscriberViem.js';
+import { USDC, AAVE, GHO } from '../src/services/Contracts.js';
 
 import { createWalletClient, http, publicActions } from 'viem'
 import { sepolia } from 'viem/chains'

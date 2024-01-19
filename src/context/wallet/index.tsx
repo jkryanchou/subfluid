@@ -38,11 +38,13 @@ const WalletContext = createContext<WalletContextProps>({
 
 export const useWalletContext = () => useContext(WalletContext);
 
-export const WalletContextProvider = ({
-                                        children,
-                                      }: {
-  children: ReactNode;
-}) => {
+export const WalletContextProvider = (
+    {
+      children,
+    }: {
+      children: ReactNode;
+    }
+) => {
   const [ownerAddress, setOwnerAddress] = useState<Address>();
   const [scaAddress, setScaAddress] = useState<Address>();
   const [username, setUsername] = useState<string>();

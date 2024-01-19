@@ -1,6 +1,6 @@
 
 import { encodeFunctionData, getContract, parseAbi } from 'viem'
-import { USDC, AAVE, GHO } from '../src/Contracts.js'
+import { USDC, AAVE, GHO } from './Contracts.js'
 
 export class SubscriberViem {
   
@@ -33,7 +33,7 @@ export class SubscriberViem {
       functionName: 'approve',
       args: [spender, amount]
     });
-    return callData;
+    return callData.toString();
   }
 
   genSupplyUSDCToAAVECalldata(supplyAmount, userAddr) {
@@ -107,19 +107,19 @@ export class SubscriberViem {
     const { supplyAmount, borrowAmount, payAmount } = SubscriberViem.calculateAmounts(plan);
     return [
       {
-        to: USDC.address,
+        target: USDC.address,
         data: this.genUSDCApproveCalldata(AAVE.address, supplyAmount)
       },
       {
-        to: AAVE.address,
+        target: AAVE.address,
         data: this.genSupplyUSDCToAAVECalldata(supplyAmount, userAddr)
       },
       {
-        to: AAVE.address,
+        target: AAVE.address,
         data: this.genBorrowGHOFromAAVECalldata(borrowAmount, userAddr)
       },
       {
-        to: GHO.address,
+        target: GHO.address,
         data: this.genGHOTransferCalldata(serviceAddr, payAmount)
       }
     ]
@@ -127,7 +127,8 @@ export class SubscriberViem {
 
   static calculateAmounts(plan) {
     let [supplyAmount, borrowAmount, payAmount] = [0n, 0n, 0n];
-    if (plan == 'monthly') {
+
+    if (plan.toLowerCase() === 'monthly') {
       // Pay 15 GHO to service
       // -> Borrow 15 GHO from AAVE Pool
       // -> Supply 20 USDC to AAVE Pool (75%)
@@ -136,7 +137,7 @@ export class SubscriberViem {
       supplyAmount = 20n * USDC.decimals;
       return { supplyAmount, borrowAmount, payAmount };
 
-    } else if (plan == 'annual') {
+    } else if (plan.toLowerCase() === 'annual') {
       // 20% discount for annual plan
       // Pay 15 GHO * 12 * 0.8 to service
       // -> Borrow 15 GHO * 12 * 0.8 from AAVE Pool

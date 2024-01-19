@@ -23,6 +23,10 @@ export const useAlchemyProvider = () => {
       new AlchemyProvider({
         chain,
         rpcUrl: getRpcUrl(),
+        opts: {
+          txMaxRetries: 100,
+          txRetryIntervalMs: 1000,
+        }
       })
   );
 

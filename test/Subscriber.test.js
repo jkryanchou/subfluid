@@ -2,8 +2,8 @@
 import { expect } from 'chai';
 import { assert } from 'chai';
 
-import { Subscriber } from '../src/Subscriber.js';
-import { USDC, AAVE, GHO } from '../src/Contracts.js';
+import { Subscriber } from '../src/services/Subscriber.js';
+import { USDC, AAVE, GHO } from '../src/services/Contracts.js';
 
 describe('Subscriber Test Suites', function () {
     let testSubscriber;

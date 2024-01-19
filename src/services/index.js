@@ -1,7 +1,7 @@
 
 import { docopt } from "docopt";
 
-import { Subscriber } from "../src/Subscriber.js";
+import { Subscriber } from "./Subscriber.js";
 import { USDC, GHO } from "./Contracts.js";
 
 const doc = `

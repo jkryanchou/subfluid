@@ -2,16 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import {LoginContext} from "@/app/login";
 import {useWalletContext} from "@/context/wallet";
-import Avatar from "react-avatar";
+import copy from "copy-to-clipboard";
 
 
 export default function Header() {
 
   const loginContext = useContext(LoginContext);
-  const {isLoggedIn, username, logout} = useWalletContext();
+  const {isLoggedIn, username, scaAddress, logout} = useWalletContext();
+  const [copied, setCopied] = useState<boolean>(false);
 
   return (
       <div
@@ -33,9 +34,18 @@ export default function Header() {
 
           {
             isLoggedIn ? (
-                <button onClick={logout}>
-                  <Avatar className={"ml-[8px]"} value={username?.slice(0, 2)?.toUpperCase()}
-                          size={'44px'} round={"50%"}/>
+                <button
+                    className="ml-[16px] px-[16px] w-[200px] h-[44px] rounded-[100px] bg-[#1A1A1A] text-[#FFF] flex flex-row items-center justify-center"
+                    onClick={() => {
+                      const content = scaAddress as string
+                      copy(content);
+                      setCopied(true);
+
+                      setTimeout(() => {
+                        setCopied(false);
+                      }, 3000);
+                    }}>
+                  {copied ? 'Copied!' : `${scaAddress?.slice(0, 8)}....${scaAddress?.slice(36)}`}
                 </button>
             ) : null
           }
