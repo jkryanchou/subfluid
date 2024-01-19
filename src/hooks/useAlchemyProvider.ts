@@ -12,7 +12,7 @@ import {
   getDefaultEntryPointAddress,
 } from "@alchemy/aa-core";
 import {useCallback, useState} from "react";
-import {Address} from "viem";
+import { type Address, type Chain } from "viem";
 
 export enum PluginType {
   SESSION_KEY,
@@ -34,11 +34,14 @@ export const useAlchemyProvider = () => {
       (signer: SmartAccountSigner, account?: Address) => {
         const connectedProvider = provider
         .connect((provider) => {
+          // @ts-ignore
           return createMultiOwnerMSCA({
             rpcClient: provider,
             owner: signer,
             chain,
+            // @ts-ignore
             entryPointAddress: getDefaultEntryPointAddress(chain),
+            // @ts-ignore
             factoryAddress: getDefaultMultiOwnerMSCAFactoryAddress(chain),
             accountAddress: account,
           });

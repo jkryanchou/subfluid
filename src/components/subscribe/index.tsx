@@ -223,7 +223,7 @@ function SubscribeModal(props: any, ref: Ref<SubscribeModalType>) {
           </button>
 
           <p className="text-[#C3C3C3] mt-[12px] text-[12px] leading-[14px]">
-            <span>By registering you agree to Subfluid's</span>
+            <span>By registering you agree to Subfluid&lsquos</span>
             <Link href={"/"}>Terms of Service</Link>
           </p>
         </div>
