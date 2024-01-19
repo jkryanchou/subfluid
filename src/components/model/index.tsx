@@ -16,7 +16,7 @@ export declare interface ModelType {
 }
 
 function Modal({onClose , closable, children}: ModelProps, ref: Ref<ModelType>) {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const container = document.querySelector("body");
