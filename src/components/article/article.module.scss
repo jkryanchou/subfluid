@@ -1,0 +1,75 @@
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 39px;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+
+.card {
+  padding: 16px 0;
+  border-bottom: 1px solid #D6D6D6
+}
+
+.markdown {
+  margin-top: 4px;
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: serif;
+    font-size: initial;
+    font-weight: bold;
+  }
+
+  > * {
+    margin: 16px 0;
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 32px;
+    letter-spacing: 0;
+    text-align: left;
+  }
+
+  p {
+    font-family: serif;
+    font-size: 20px;
+    line-height: 32px;
+  }
+}
+
+.username {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  text-align: left;
+}
+
+.vault {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  text-align: left;
+  color: #616161c0;
+
+  &:hover {
+    color: #222baa;
+    text-decoration: underline; // 鼠标悬停时显示下划线
+
+  }
+}
+
+.created-time {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  text-align: left;
+  color: #808080;
+}
+
+.footer {
+
+}
